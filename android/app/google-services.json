@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086435698084",
+    "project_id": "chat-zxc",
+    "storage_bucket": "chat-zxc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086435698084:android:2eabe060922c86de344d31",
+        "android_client_info": {
+          "package_name": "com.zxc.chat_zxc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBecaZnr0yPFDmDwsfa9jjStfygXQ55UQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
