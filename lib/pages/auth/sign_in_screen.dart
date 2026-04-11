@@ -1,8 +1,6 @@
-import 'package:chat_zxc/pages/auth/sign_up_screen.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/components/aether_text_field.dart';
 import 'package:chat_zxc/shared/ui/aether_void_glow_background.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -77,7 +75,7 @@ class SignInScreen extends StatelessWidget {
           label: "Sign In",
           fullWidth: true,
           onPressed: () {
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         )
             .animate(delay: 400.ms)

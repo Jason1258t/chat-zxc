@@ -420,7 +420,10 @@ class _AetherFABState extends State<AetherFAB>
   }
 
   @override
-  void dispose() => _ctrl.dispose();
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

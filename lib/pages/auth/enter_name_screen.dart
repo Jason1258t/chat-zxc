@@ -141,6 +141,8 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
                     onPressed: _isLoading ? null : _handleComplete,
                     // Добавляем индикатор загрузки если нужно, или просто блокируем
                   ).animate(delay: 400.ms).fadeIn(),
+
+                  SizedBox(height: AetherSpacing.xl6,)
                 ],
               ),
             ),
