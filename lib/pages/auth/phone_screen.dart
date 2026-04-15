@@ -21,6 +21,62 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
   final _phoneController = TextEditingController();
   bool _agreed = false;
 
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(AetherSpacing.xl2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: AetherSpacing.md),
+                Text('Sending code...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hideLoadingDialog() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> sendCode() async {
+    _showLoadingDialog();
+
+    try {
+      await ref
+          .read(authControllerProvider.notifier)
+          .sendCode(_phoneController.text.trim());
+
+      _hideLoadingDialog();
+      goToVerify();
+    } catch (e) {
+      _hideLoadingDialog();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send code: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void goToVerify() {
+    context.go('/auth/verify-phone');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,14 +147,7 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
                   AetherButton.elevated(
                     label: 'Next',
                     fullWidth: true,
-                    onPressed: _agreed
-                        ? () {
-                            ref
-                                .read(authControllerProvider.notifier)
-                                .sendCode(_phoneController.text)
-                                .then((_) => context.go('/auth/verify-phone'));
-                          }
-                        : null,
+                    onPressed: _agreed ? sendCode : null,
                   ).animate(delay: 400.ms).fadeIn(),
                   const SizedBox(height: AetherSpacing.xl4),
                 ],

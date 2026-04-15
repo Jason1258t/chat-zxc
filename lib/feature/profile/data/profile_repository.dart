@@ -5,6 +5,15 @@ import 'package:nanoid/nanoid.dart';
 
 part 'profile_repository.g.dart';
 
+class DraftProfile {
+  final String username;
+  final String displayName;
+
+  DraftProfile.fromMap(Map<String, dynamic> map)
+    : username = map['username'],
+        displayName = map['displayName'];
+}
+
 @riverpod
 ProfileRepository profileRepository(Ref ref) {
   return ProfileRepository(firestore: FirebaseFirestore.instance);
@@ -12,6 +21,8 @@ ProfileRepository profileRepository(Ref ref) {
 
 class ProfileRepository {
   final FirebaseFirestore _firestore;
+
+  DraftProfile? draftProfile;
 
   ProfileRepository({required FirebaseFirestore firestore})
     : _firestore = firestore;
@@ -24,6 +35,19 @@ class ProfileRepository {
     try {
       final doc = await _firestore.collection(_collection).doc(uid).get();
       return doc.exists;
+    } catch (e) {
+      throw Exception('Ошибка проверки существования профиля: $e');
+    }
+  }
+
+  Future<bool> registrationCompleted(String uid) async {
+    try {
+      final doc = await _firestore.collection(_collection).doc(uid).get();
+      final data = doc.data() ?? {};
+      if (doc.exists) {
+        draftProfile = DraftProfile.fromMap(data);
+      }
+      return doc.exists && data['registrationCompleted'];
     } catch (e) {
       throw Exception('Ошибка проверки существования профиля: $e');
     }
@@ -69,7 +93,7 @@ class ProfileRepository {
         'id': uid,
         'username': finalUsername,
         'displayName': displayName,
-        'bio': '',
+        'registrationCompleted': false,
         'phone': phoneNumber,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
@@ -101,6 +125,7 @@ class ProfileRepository {
         'username': username,
         'displayName': displayName,
         'updatedAt': FieldValue.serverTimestamp(),
+        'registrationCompleted': true,
       };
 
       await _firestore.collection(_collection).doc(uid).update(updateData);

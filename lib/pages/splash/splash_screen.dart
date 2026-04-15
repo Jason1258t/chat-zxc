@@ -39,19 +39,18 @@ class _SplashScreenState extends State<SplashScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Логотип с эффектом «дыхания»
-              ShaderMask(
-                shaderCallback: (bounds) => AetherColors.gradientPrimary.createShader(bounds),
-                child: Text(
-                  'ZXC',
-                  style: AetherTypography.displayLarge.copyWith(
-                    fontSize: 72,
-                    color: Colors.white,
+              SizedBox(width: double.infinity),
+              Image.asset('assets/icon/icon-wo-bg.png', width: 200, height: 200)
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .shimmer(
+                    duration: 2.seconds,
+                    color: AetherColors.violet300.withValues(alpha: 0.3),
+                  )
+                  .scale(
+                    begin: const Offset(1, 1),
+                    end: const Offset(1.05, 1.05),
+                    duration: 2.seconds,
                   ),
-                ),
-              ).animate(onPlay: (c) => c.repeat(reverse: true))
-                  .shimmer(duration: 2.seconds, color: AetherColors.violet300.withValues(alpha: 0.3))
-                  .scale(begin: const Offset(1, 1), end: const Offset(1.05, 1.05), duration: 2.seconds),
 
               const SizedBox(height: AetherSpacing.xl6),
 

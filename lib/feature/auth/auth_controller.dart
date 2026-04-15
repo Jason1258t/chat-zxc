@@ -6,11 +6,11 @@ import 'data/auth_repository.dart';
 part 'auth_controller.g.dart';
 
 enum AuthStep {
-  initial,        // Запуск приложения
-  unauthenticated,// Нужно ввести телефон
-  needsProfile,   // СМС подтвержден, но профиля нет
-  authenticated,  // Полный доступ к мессенджеру
-  loading         // Процесс запросов
+  initial, // Запуск приложения
+  unauthenticated, // Нужно ввести телефон
+  needsProfile, // СМС подтвержден, но профиля нет
+  authenticated, // Полный доступ к мессенджеру
+  loading, // Процесс запросов
 }
 
 @riverpod
@@ -35,14 +35,30 @@ class AuthController extends _$AuthController {
     return AuthStep.initial;
   }
 
+  DraftProfile get draftProfile => _profileRepo.draftProfile!;
+
   Future<void> _handleFirebaseState(AuthentificationState firebaseState) async {
     switch (firebaseState) {
       case AuthentificationState.auth:
         final user = _authRepo.currentUser;
         if (user != null) {
           state = AuthStep.loading;
-          final exists = await _profileRepo.profileExists(user.uid);
-          state = exists ? AuthStep.authenticated : AuthStep.needsProfile;
+          final bool registrationCompleted;
+          if (!await _profileRepo.profileExists(user.uid)) {
+            registrationCompleted = false;
+            await _profileRepo.createProfile(
+              user.uid,
+              _authRepo.currentUser!.phoneNumber!,
+            );
+          } else {
+            registrationCompleted = await _profileRepo.registrationCompleted(
+              user.uid,
+            );
+          }
+
+          state = registrationCompleted
+              ? AuthStep.authenticated
+              : AuthStep.needsProfile;
         }
         break;
       case AuthentificationState.unAuth:
@@ -57,11 +73,15 @@ class AuthController extends _$AuthController {
     }
   }
 
+  Future<void> sendCode(String phone) =>
+      _authRepo.startPhoneVerification(phone);
 
-  Future<void> sendCode(String phone) => _authRepo.startPhoneVerification(phone);
   Future<void> verifyCode(String code) => _authRepo.confirmCode(code);
 
-  Future<void> completeRegistration({required String username, required String displayName}) async {
+  Future<void> completeRegistration({
+    required String username,
+    required String displayName,
+  }) async {
     final user = _authRepo.currentUser;
     if (user == null) return;
 

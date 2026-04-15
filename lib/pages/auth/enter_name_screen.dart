@@ -1,26 +1,34 @@
+import 'package:chat_zxc/feature/auth/auth_controller.dart';
+import 'package:chat_zxc/feature/profile/data/profile_repository.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/components/aether_text_field.dart';
 import 'package:chat_zxc/shared/ui/aether_void_glow_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-class EnterNameScreen extends StatefulWidget {
+class EnterNameScreen extends ConsumerStatefulWidget {
   const EnterNameScreen({super.key});
 
   @override
-  State<EnterNameScreen> createState() => _EnterNameScreenState();
+  ConsumerState<EnterNameScreen> createState() => _EnterNameScreenState();
 }
 
-class _EnterNameScreenState extends State<EnterNameScreen> {
+class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
   final _usernameController = TextEditingController();
   final _displayNameController = TextEditingController();
 
   bool _isLoading = false;
 
-  // Имитация списка занятых имен для теста
-  final List<String> _takenUsernames = ['admin', 'aether', 'void', 'zxc'];
+  @override
+  void initState() {
+    DraftProfile draft = ref.read(authControllerProvider.notifier).draftProfile;
+    _usernameController.text = draft.username;
+    _displayNameController.text = draft.displayName;
+    super.initState();
+  }
 
   void _handleComplete() async {
     final username = _usernameController.text.trim().toLowerCase();
@@ -37,17 +45,9 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
     }
 
     setState(() => _isLoading = true);
-
-    // Имитация задержки сетевого запроса
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (_takenUsernames.contains(username)) {
-      setState(() => _isLoading = false);
-      _showErrorSnackBar('Username @$username is already taken');
-    } else {
-      // Успех: меняем глобальный стейт, роутер сам перекинет на '/'
-      // mockAuthState.value = true;
-    }
+    ref
+        .read(authControllerProvider.notifier)
+        .completeRegistration(username: username, displayName: displayName);
   }
 
   void _showErrorSnackBar(String message) {
@@ -76,7 +76,7 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
 
   static final _usernameFormatter = MaskTextInputFormatter(
     mask: '@####################', // Задаем запас по длине
-    filter: { "#": RegExp(r'[a-zA-Z0-9_]') },
+    filter: {"#": RegExp(r'[a-zA-Z0-9_]')},
     type: MaskAutoCompletionType.lazy,
   );
 
@@ -124,7 +124,8 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
                   AetherTextField(
                     controller: _usernameController,
                     label: 'Username',
-                    hint: '@username', // Подсказка теперь тоже с собачкой
+                    hint: '@username',
+                    // Подсказка теперь тоже с собачкой
                     keyboardType: TextInputType.text,
                     inputFormatters: [_usernameFormatter],
                   ).animate(delay: 300.ms).fadeIn().slideY(begin: 0.1),
@@ -138,7 +139,7 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
                     // Добавляем индикатор загрузки если нужно, или просто блокируем
                   ).animate(delay: 400.ms).fadeIn(),
 
-                  SizedBox(height: AetherSpacing.xl6,)
+                  SizedBox(height: AetherSpacing.xl6),
                 ],
               ),
             ),

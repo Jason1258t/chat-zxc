@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_zxc/feature/auth/auth_controller.dart';
 import 'package:chat_zxc/pages/auth/enter_name_screen.dart';
 import 'package:chat_zxc/pages/auth/phone_screen.dart';
@@ -18,6 +20,7 @@ GoRouter appRouter(Ref ref) {
     initialLocation: '/',
 
     redirect: (context, state) {
+      log(authStep.toString());
       final path = state.uri.path;
       final isAuthPath = path.startsWith('/auth') || path == '/welcome';
 
@@ -33,7 +36,7 @@ GoRouter appRouter(Ref ref) {
         return path == '/auth/enter-name' ? null : '/auth/enter-name';
       }
 
-      if (authStep == AuthStep.authenticated && isAuthPath) {
+      if (authStep == AuthStep.authenticated && (isAuthPath || path == '/')) {
         return '/home';
       }
 

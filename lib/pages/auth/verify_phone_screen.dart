@@ -89,9 +89,9 @@ class _VerifyPhoneScreenState extends ConsumerState<VerifyPhoneScreen> {
                         border: Border.all(color: AetherColors.violet500),
                       ),
                     ),
-                      onCompleted: (pin) async {
-                        await ref.read(authControllerProvider.notifier).verifyCode(pin);
-                      }
+                    onCompleted: (pin) => ref
+                        .read(authControllerProvider.notifier)
+                        .verifyCode(pin),
                   ),
 
                   const Spacer(flex: 2),
