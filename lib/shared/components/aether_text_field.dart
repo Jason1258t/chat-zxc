@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 // ─────────────────────────────────────────────────────────────
 // AETHER TEXT FIELD
@@ -18,6 +19,11 @@ import 'package:chat_zxc/shared/theme/aether.dart';
 
 enum AetherInputStatus { normal, error, success }
 enum _TextFieldFlavor { standard, search, password }
+final _phoneFormatter = MaskTextInputFormatter(
+  mask: '+7 (###) ###-##-##',
+  filter: { "#": RegExp(r'[0-9]') },
+  type: MaskAutoCompletionType.lazy,
+);
 
 class AetherTextField extends StatefulWidget {
   final String? label;
@@ -104,6 +110,31 @@ class AetherTextField extends StatefulWidget {
     this.maxLines = 1,
     required _TextFieldFlavor flavor,
   }) : _flavor = flavor;
+
+  factory AetherTextField.phone({
+    Key? key,
+    String label = 'Phone Number',
+    String hint = '+7 (000) 000-00-00',
+    TextEditingController? controller,
+    FocusNode? focusNode,
+    ValueChanged<String>? onChanged,
+    ValueChanged<String>? onSubmitted,
+    AetherInputStatus status = AetherInputStatus.normal,
+    String? errorText,
+  }) =>
+      AetherTextField(
+        key: key,
+        label: label,
+        hint: hint,
+        controller: controller,
+        focusNode: focusNode,
+        inputFormatters: [_phoneFormatter],
+        onChanged: onChanged,
+        onSubmitted: onSubmitted,
+        keyboardType: TextInputType.phone,
+        status: status,
+        errorText: errorText,
+      );
 
   /// Поле поиска с иконкой лупы
   factory AetherTextField.search({

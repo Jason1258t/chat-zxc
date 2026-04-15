@@ -1,56 +1,47 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:chat_zxc/pages/welcome/welcome_screen.dart';
-import 'package:chat_zxc/pages/auth/sign_in_screen.dart';
-import 'package:chat_zxc/pages/auth/sign_up_screen.dart';
-import 'package:chat_zxc/pages/auth/verify_email_screen.dart';
+import 'package:chat_zxc/feature/auth/auth_controller.dart';
 import 'package:chat_zxc/pages/auth/enter_name_screen.dart';
+import 'package:chat_zxc/pages/auth/phone_screen.dart';
+import 'package:chat_zxc/pages/auth/verify_phone_screen.dart';
+import 'package:chat_zxc/pages/home/home_screen.dart';
+import 'package:chat_zxc/pages/splash/splash_screen.dart';
+import 'package:chat_zxc/pages/welcome/welcome_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// Временная заглушка состояния авторизации.
-/// false = пользователь не авторизован (кидает на /welcome).
-/// Переключи на true, чтобы протестировать защищенные роуты.
-final ValueNotifier<bool> mockAuthState = ValueNotifier<bool>(false);
+part 'router.g.dart';
 
-class AppRouter {
-  static final GoRouter router = GoRouter(
+@riverpod
+GoRouter appRouter(Ref ref) {
+  final authStep = ref.watch(authControllerProvider);
+
+  return GoRouter(
     initialLocation: '/',
-    // Подписываем роутер на изменения состояния авторизации
-    refreshListenable: mockAuthState,
 
-    // Глобальный перехватчик (Auth Guard)
-    redirect: (BuildContext context, GoRouterState state) {
-      final bool isAuthenticated = mockAuthState.value;
-      final String currentPath = state.uri.path;
+    redirect: (context, state) {
+      final path = state.uri.path;
+      final isAuthPath = path.startsWith('/auth') || path == '/welcome';
 
-      // Список публичных маршрутов (процесс авторизации)
-      final bool isAuthRoute = currentPath.startsWith('/welcome') ||
-          currentPath.startsWith('/auth');
-
-      // Разрешаем доступ к UI-киту всегда (для удобства разработки)
-      if (currentPath == '/kit') return null;
-
-      // Если не авторизован и пытается зайти не на страницу авторизации -> на welcome
-      if (!isAuthenticated && !isAuthRoute) {
-        return '/welcome';
+      if (authStep == AuthStep.initial || authStep == AuthStep.loading) {
+        return null;
       }
 
-      // Если авторизован, но находится на странице авторизации -> на главную
-      if (isAuthenticated && isAuthRoute) {
-        return '/';
+      if (authStep == AuthStep.unauthenticated) {
+        return isAuthPath ? null : '/welcome';
       }
 
-      return null; // Никаких изменений маршрута не требуется
+      if (authStep == AuthStep.needsProfile) {
+        return path == '/auth/enter-name' ? null : '/auth/enter-name';
+      }
+
+      if (authStep == AuthStep.authenticated && isAuthPath) {
+        return '/home';
+      }
+
+      return null;
     },
 
     routes: <RouteBase>[
-      // ─── ЗАЩИЩЕННАЯ ЗОНА ──────────────────────────────────────────
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Home Screen (Protected)')),
-        ),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
 
       // ─── ЗОНА АВТОРИЗАЦИИ ─────────────────────────────────────────
       GoRoute(
@@ -58,22 +49,19 @@ class AppRouter {
         builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
-        path: '/auth/sign-in',
-        builder: (context, state) => const SignInScreen(),
+        path: '/auth/phone',
+        builder: (context, state) => const PhoneScreen(),
       ),
       GoRoute(
-        path: '/auth/sign-up',
-        builder: (context, state) => const SignUpScreen(),
-      ),
-      GoRoute(
-        path: '/auth/verify-email',
-        builder: (context, state) => const VerifyEmailScreen(),
+        path: '/auth/verify-phone',
+        builder: (context, state) => const VerifyPhoneScreen(),
       ),
       GoRoute(
         path: '/auth/enter-name',
         builder: (context, state) => const EnterNameScreen(),
       ),
 
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     ],
   );
 }

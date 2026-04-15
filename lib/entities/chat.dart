@@ -1,7 +1,15 @@
-class Chat {
+abstract interface class Chat {
+  String get name;
+
+  String? get imageUrl;
+}
+
+class DirectChat implements Chat {
+  @override
   final String name;
-  final String imageUrl;
 
+  @override
+  final String? imageUrl;
 
-  Chat({required this.name, required this.imageUrl});
+  DirectChat({required this.name, required this.imageUrl});
 }

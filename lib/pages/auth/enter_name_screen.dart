@@ -4,6 +4,7 @@ import 'package:chat_zxc/shared/ui/aether_void_glow_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class EnterNameScreen extends StatefulWidget {
   const EnterNameScreen({super.key});
@@ -73,6 +74,12 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
     super.dispose();
   }
 
+  static final _usernameFormatter = MaskTextInputFormatter(
+    mask: '@####################', // Задаем запас по длине
+    filter: { "#": RegExp(r'[a-zA-Z0-9_]') },
+    type: MaskAutoCompletionType.lazy,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +114,7 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
                   AetherTextField(
                     controller: _displayNameController,
                     label: 'Display Name',
-                    hint: 'Your name or nickname',
+                    hint: 'Your name to display',
                     textInputAction: TextInputAction.next,
                   ).animate(delay: 200.ms).fadeIn().slideY(begin: 0.1),
 
@@ -117,20 +124,9 @@ class _EnterNameScreenState extends State<EnterNameScreen> {
                   AetherTextField(
                     controller: _usernameController,
                     label: 'Username',
-                    hint: 'unique_handle',
-                    leading: const Padding(
-                      padding: EdgeInsets.only(left: 12, right: 4),
-                      child: Text(
-                        '@',
-                        style: TextStyle(
-                          color: AetherColors.violet500,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    inputFormatters: [
-                      // Ограничиваем ввод только латиницей, цифрами и нижним подчеркиванием
-                    ],
+                    hint: '@username', // Подсказка теперь тоже с собачкой
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [_usernameFormatter],
                   ).animate(delay: 300.ms).fadeIn().slideY(begin: 0.1),
 
                   const Spacer(),

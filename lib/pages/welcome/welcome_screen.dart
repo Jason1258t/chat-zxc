@@ -126,7 +126,7 @@ class WelcomeScreen extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-          context.go('/auth/sign-up');
+          context.go('/auth/phone');
         },
         child: Text('Continue', style: AetherTypography.displaySmall),
       ),

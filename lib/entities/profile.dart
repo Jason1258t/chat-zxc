@@ -1,9 +1,7 @@
 import 'package:chat_zxc/shared/utils/timeAgo.dart';
 
 class UserProfile {
-  // Phone
   // Personal Channel
-  // Name color
   // Profile photos
 
   final String id;
@@ -12,7 +10,7 @@ class UserProfile {
   final String? bio;
   final String username;
   final String? phone;
-  final String color;
+  final String? color;
   final DateTime? lastSeen;
   final DateTime? birthday;
 
@@ -20,7 +18,7 @@ class UserProfile {
     required this.id,
     required this.username,
     required this.name,
-    required this.color,
+    this.color,
     this.bio,
     this.phone,
     this.lastSeen,

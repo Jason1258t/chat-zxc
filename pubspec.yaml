@@ -47,6 +47,10 @@ dependencies:
   go_router: ^17.2.0
   flutter_animate: ^4.5.2
   pinput: ^6.0.2
+  loading_animation_widget: ^1.3.0
+  mask_text_input_formatter: ^2.9.0
+  flutter_riverpod: ^3.3.1
+  nanoid: ^1.0.0
 
 dev_dependencies:
   flutter_test:
