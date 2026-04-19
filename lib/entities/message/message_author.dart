@@ -1,4 +1,4 @@
-import 'profile.dart';
+import 'package:chat_zxc/entities/user/profile.dart';
 
 abstract interface class MessageAuthor {
   String get name;
@@ -18,10 +18,11 @@ class AuthorPreview implements MessageAuthor {
   @override
   final String id;
 
-  AuthorPreview.fromJson(Map json)
-    : name = json['name'],
-      avatarUrl = json['imageUrl'],
-      id = json['id'];
+  AuthorPreview(this.name, this.avatarUrl, this.id);
+
+  factory AuthorPreview.fromJson(Map json) {
+    return AuthorPreview(json['name'], json['avatarUrl'], json['id']);
+  }
 }
 
 class DetailedAuthorInfo extends UserProfile implements MessageAuthor {

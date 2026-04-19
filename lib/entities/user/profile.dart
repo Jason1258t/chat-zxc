@@ -1,8 +1,12 @@
 import 'package:chat_zxc/shared/utils/timeAgo.dart';
 
+part 'last_seen.dart';
+
 class UserProfile {
   // Personal Channel
   // Profile photos
+
+  static const maxUsernameLength = 20;
 
   final String id;
   final String name;
@@ -25,21 +29,4 @@ class UserProfile {
     this.birthday,
     this.avatarUrl,
   });
-}
-
-enum LastSeenDataType { shown, hidden }
-
-class LastSeenData {
-  final LastSeenDataType type;
-  final String _rawData;
-
-  LastSeenData({required this.type, required String data}) : _rawData = data;
-
-  String get value {
-    if (type == .shown) {
-      return timeAgo(DateTime.parse(_rawData));
-    }
-
-    return _rawData;
-  }
 }

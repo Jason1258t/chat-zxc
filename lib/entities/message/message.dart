@@ -1,4 +1,4 @@
-import 'package:chat_zxc/entities/views.dart';
+import 'views.dart';
 import 'message_author.dart';
 import 'reaction.dart';
 

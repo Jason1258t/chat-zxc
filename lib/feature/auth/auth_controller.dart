@@ -1,4 +1,5 @@
 import 'package:chat_zxc/feature/profile/data/profile_repository.dart';
+import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'data/auth_repository.dart';
@@ -23,6 +24,8 @@ class AuthController extends _$AuthController {
   late final AuthRepository _authRepo;
   late final ProfileRepository _profileRepo;
 
+  DraftProfile? _profileDraft;
+
   @override
   AuthStep build() {
     _authRepo = ref.watch(authRepositoryProvider);
@@ -35,7 +38,7 @@ class AuthController extends _$AuthController {
     return AuthStep.initial;
   }
 
-  DraftProfile get draftProfile => _profileRepo.draftProfile!;
+  DraftProfile get draftProfile => _profileDraft!;
 
   Future<void> _handleFirebaseState(AuthentificationState firebaseState) async {
     switch (firebaseState) {
@@ -43,18 +46,9 @@ class AuthController extends _$AuthController {
         final user = _authRepo.currentUser;
         if (user != null) {
           state = AuthStep.loading;
-          final bool registrationCompleted;
-          if (!await _profileRepo.profileExists(user.uid)) {
-            registrationCompleted = false;
-            await _profileRepo.createProfile(
-              user.uid,
-              _authRepo.currentUser!.phoneNumber!,
-            );
-          } else {
-            registrationCompleted = await _profileRepo.registrationCompleted(
-              user.uid,
-            );
-          }
+          _profileDraft = await _profileRepo.getDraftProfile(user.uid);
+          final bool registrationCompleted =
+              _profileDraft?.registrationCompleted ?? false;
 
           state = registrationCompleted
               ? AuthStep.authenticated
@@ -86,7 +80,7 @@ class AuthController extends _$AuthController {
     if (user == null) return;
 
     state = AuthStep.loading;
-    await _profileRepo.updateProfile(
+    await _profileRepo.completeRegistration(
       uid: user.uid,
       username: username,
       displayName: displayName,

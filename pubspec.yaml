@@ -41,7 +41,6 @@ dependencies:
   hooks_riverpod: ^3.3.1
   flutter_hooks: ^0.21.3+1
   riverpod_annotation: ^4.0.2
-  flutter_chat_ui: ^2.11.1
   rxdart: ^0.28.0
   google_fonts: ^8.0.2
   go_router: ^17.2.0
@@ -51,19 +50,18 @@ dependencies:
   mask_text_input_formatter: ^2.9.0
   flutter_riverpod: ^3.3.1
   nanoid: ^1.0.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.11.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^6.0.0
   riverpod_generator: ^4.0.3
   build_runner: ^2.13.1
+  freezed: ^3.2.5
+  json_serializable: ^6.13.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

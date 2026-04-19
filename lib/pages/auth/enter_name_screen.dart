@@ -1,5 +1,6 @@
+import 'package:chat_zxc/entities/user/profile.dart';
 import 'package:chat_zxc/feature/auth/auth_controller.dart';
-import 'package:chat_zxc/feature/profile/data/profile_repository.dart';
+import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/components/aether_text_field.dart';
 import 'package:chat_zxc/shared/ui/aether_void_glow_background.dart';
@@ -75,7 +76,7 @@ class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
   }
 
   static final _usernameFormatter = MaskTextInputFormatter(
-    mask: '@####################', // Задаем запас по длине
+    mask: '@${'#' * UserProfile.maxUsernameLength}',
     filter: {"#": RegExp(r'[a-zA-Z0-9_]')},
     type: MaskAutoCompletionType.lazy,
   );

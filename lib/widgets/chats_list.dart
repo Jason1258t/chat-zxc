@@ -1,6 +1,7 @@
-import 'package:chat_zxc/entities/chat.dart';
+import 'package:chat_zxc/entities/chat/view_model.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
+import 'package:chat_zxc/shared/utils/timeAgo.dart';
 import 'package:flutter/material.dart';
 
 class ChatsList extends StatelessWidget {
@@ -93,7 +94,7 @@ class ChatWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          chat.name,
+                          chat.title,
                           style: chat.isUnread
                               ? AetherTypography.chatListName.copyWith(
                                   fontWeight: FontWeight.w700,
@@ -105,7 +106,7 @@ class ChatWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: AetherSpacing.xs),
                       Text(
-                        chat.time,
+                        timeAgo(chat.time),
                         style: chat.isUnread
                             ? AetherChatTextStyle.chatListTimeUnread
                             : AetherChatTextStyle.chatListTime,
@@ -117,7 +118,7 @@ class ChatWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          chat.lastMessage,
+                          chat.lastMessage?.textContent ?? "meow",
                           style: chat.isUnread
                               ? AetherTypography.bodyMedium.copyWith(
                                   color: AetherColors.textSecondary,

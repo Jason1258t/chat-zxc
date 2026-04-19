@@ -1,4 +1,7 @@
-import 'package:chat_zxc/entities/chat.dart';
+import 'package:chat_zxc/entities/chat/chat.dart';
+import 'package:chat_zxc/entities/chat/view_model.dart';
+import 'package:chat_zxc/entities/message/message.dart';
+import 'package:chat_zxc/entities/message/message_author.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
 import 'package:chat_zxc/widgets/chats_list.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,9 +53,13 @@ class ChatsScreen extends StatelessWidget {
         chats: [
           ChatViewModel(
             id: 'id',
-            name: 'name',
-            lastMessage: 'lastMessage',
-            time: '5 minutes ago',
+            title: 'name',
+            lastMessage: Message(
+              id: 'id',
+              author: AuthorPreview('чушпан', null, 'шпак'),
+              sentAt: DateTime.now().subtract(Duration(minutes: 5)),
+              reactions: [],
+            ),
             imageUrl: null,
           ),
         ],

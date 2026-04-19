@@ -1,0 +1,45 @@
+import 'package:chat_zxc/entities/user/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+abstract final class UserProfileFields {
+  static const id = 'id';
+  static const username = 'username';
+  static const displayName = 'name';
+  static const avatarUrl = 'avatarUrl';
+  static const bio = 'bio';
+  static const phone = 'phone';
+  static const color = 'color';
+  static const lastSeen = 'lastSeen';
+  static const birthday = 'birthday';
+  static const createdAt = 'createdAt';
+  static const updatedAt = 'updatedAt';
+  static const registrationCompleted = 'registrationCompleted';
+}
+
+extension UserProfileMapper on DocumentSnapshot<Map<String, dynamic>> {
+  UserProfile toUserProfile() {
+    final notNullData = data()!;
+
+    return UserProfile(
+      id: id,
+      username: notNullData[UserProfileFields.username] as String,
+      name: notNullData[UserProfileFields.displayName] as String,
+      avatarUrl: notNullData[UserProfileFields.avatarUrl] as String?,
+      bio: notNullData[UserProfileFields.bio] as String?,
+      phone: notNullData[UserProfileFields.phone] as String?,
+      color: notNullData[UserProfileFields.color] as String?,
+      birthday: _parseTimestamp(notNullData[UserProfileFields.birthday]),
+      lastSeen: _parseTimestamp(notNullData[UserProfileFields.lastSeen]),
+    );
+  }
+}
+
+DateTime? _parseTimestamp(dynamic value) {
+  if (value == null) return null;
+
+  if (value is Timestamp) {
+    return value.toDate();
+  }
+
+  return null;
+}

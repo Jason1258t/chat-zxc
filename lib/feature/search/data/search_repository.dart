@@ -1,4 +1,4 @@
-import 'package:chat_zxc/feature/search/data/search_entity.dart';
+import 'package:chat_zxc/feature/search/models/search_entity.dart';
 
 class SearchRepository {
   Future<List<SearchEntity>> search(String query) async {
