@@ -4,6 +4,9 @@ import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/components/aether_text_field.dart';
 import 'package:chat_zxc/shared/ui/aether_void_glow_background.dart';
+import 'package:chat_zxc/shared/ui/app_dialogs.dart';
+import 'package:chat_zxc/shared/utils/dialog_manager.dart';
+import 'package:chat_zxc/shared/utils/notifications_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
@@ -20,8 +23,6 @@ class EnterNameScreen extends ConsumerStatefulWidget {
 class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
   final _usernameController = TextEditingController();
   final _displayNameController = TextEditingController();
-
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -45,7 +46,6 @@ class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
     ref
         .read(authControllerProvider.notifier)
         .completeRegistration(username: username, displayName: displayName);
@@ -83,6 +83,29 @@ class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Слушаем изменения состояния для показа оверлея и ошибок
+    ref.listen<AuthControllerState>(authControllerProvider, (previous, next) {
+      // Управление лоадером через каталог
+      if (next.loading && !(previous?.loading ?? false)) {
+        DialogManager().showModal(
+          context,
+          AppDialogs.loading(),
+          barrierDismissible: false,
+        );
+      } else if (!next.loading && (previous?.loading ?? false)) {
+        DialogManager().hideDialog();
+      }
+
+      // Управление ошибками через менеджер уведомлений
+      if (next.error != null && next.error != previous?.error) {
+        NotificationManager().showError(context, next.error.toString());
+        ref.read(authControllerProvider.notifier).clearError();
+      }
+    });
+
+    final isLoading = ref.watch(authControllerProvider.select((s) => s.loading));
+
+
     return Scaffold(
       body: Stack(
         children: [
@@ -136,7 +159,7 @@ class _EnterNameScreenState extends ConsumerState<EnterNameScreen> {
                   AetherButton.elevated(
                     label: 'Enter the ZXC',
                     fullWidth: true,
-                    onPressed: _isLoading ? null : _handleComplete,
+                    onPressed: isLoading ? null : _handleComplete,
                     // Добавляем индикатор загрузки если нужно, или просто блокируем
                   ).animate(delay: 400.ms).fadeIn(),
 

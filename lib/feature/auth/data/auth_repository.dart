@@ -82,6 +82,8 @@ class AuthRepository {
   }
 
   void _onCodeSent(String verificationId, int? resendToken) async {
+    log("Code successfully sent");
+
     _phoneVerificationData ??= PhoneVerificationData();
     _phoneVerificationData!.onCodeSent(verificationId, resendToken);
   }

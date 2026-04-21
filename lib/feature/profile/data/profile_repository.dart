@@ -40,7 +40,7 @@ class ProfileRepository {
     return prefix + shortId;
   }
 
-  Future<void> createProfile(
+  Future<DraftProfile> createProfile(
     String uid,
     String phoneNumber, {
     String? username,
@@ -61,6 +61,9 @@ class ProfileRepository {
         displayName: displayName,
       ),
     );
+
+    final profile = await _profileService.getDraftProfile(uid);
+    return profile!;
   }
 
   Future<void> completeRegistration({

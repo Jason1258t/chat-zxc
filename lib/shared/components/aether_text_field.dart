@@ -121,6 +121,7 @@ class AetherTextField extends StatefulWidget {
     ValueChanged<String>? onSubmitted,
     AetherInputStatus status = AetherInputStatus.normal,
     String? errorText,
+    bool enabled = false
   }) =>
       AetherTextField(
         key: key,
@@ -134,6 +135,8 @@ class AetherTextField extends StatefulWidget {
         keyboardType: TextInputType.phone,
         status: status,
         errorText: errorText,
+        enabled: enabled,
+        readOnly: !enabled,
       );
 
   /// Поле поиска с иконкой лупы

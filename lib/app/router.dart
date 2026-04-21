@@ -7,6 +7,7 @@ import 'package:chat_zxc/pages/auth/verify_phone_screen.dart';
 import 'package:chat_zxc/pages/home/home_screen.dart';
 import 'package:chat_zxc/pages/splash/splash_screen.dart';
 import 'package:chat_zxc/pages/welcome/welcome_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,30 +15,37 @@ part 'router.g.dart';
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  final authStep = ref.watch(authControllerProvider);
+  final authStep = ref.watch(
+      authControllerProvider.select((state) => state.step)
+  );
 
   return GoRouter(
     initialLocation: '/',
 
     redirect: (context, state) {
-      log(authStep.toString());
       final path = state.uri.path;
       final isAuthPath = path.startsWith('/auth') || path == '/welcome';
 
-      if (authStep == AuthStep.initial || authStep == AuthStep.loading) {
-        return null;
-      }
+      log('====== Redirect status =========');
+      log("Current authStep: $authStep");
+      log("Current path: $path, it is ${isAuthPath ? '' : 'not '}auth location");
+      log('===============================');
+      log('');
+
+      if (authStep == AuthStep.pending) return null;
 
       if (authStep == AuthStep.unauthenticated) {
-        return isAuthPath ? null : '/welcome';
+        if (isAuthPath) return null;
+        return '/welcome';
       }
 
       if (authStep == AuthStep.needsProfile) {
-        return path == '/auth/enter-name' ? null : '/auth/enter-name';
+        if (path == '/auth/enter-name') return null;
+        return '/auth/enter-name';
       }
 
-      if (authStep == AuthStep.authenticated && (isAuthPath || path == '/')) {
-        return '/home';
+      if (authStep == AuthStep.authenticated) {
+        if (isAuthPath || path == '/') return '/home';
       }
 
       return null;
