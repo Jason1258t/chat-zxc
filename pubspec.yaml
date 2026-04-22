@@ -52,6 +52,7 @@ dependencies:
   nanoid: ^1.0.0
   freezed_annotation: ^3.1.0
   json_annotation: ^4.11.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
