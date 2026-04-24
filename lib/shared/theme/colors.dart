@@ -130,7 +130,7 @@ abstract class AetherColors {
 
   /// Glassmorphism overlay — панели поверх контента
   static const Color glassLight = Color(0x1AFFFFFF);
-  static const Color glassMedium = Color(0x26FFFFFF);
+  static const Color glassMedium = Color(0xff181818);
   static const Color glassDark = Color(0x0DFFFFFF);
 
   /// Overlay для модальных окон

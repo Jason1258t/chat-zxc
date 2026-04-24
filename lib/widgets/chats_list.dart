@@ -1,7 +1,7 @@
 import 'package:chat_zxc/entities/chat/view_model.dart';
 import 'package:chat_zxc/shared/components/aether_button.dart';
 import 'package:chat_zxc/shared/theme/aether.dart';
-import 'package:chat_zxc/shared/utils/timeAgo.dart';
+import 'package:chat_zxc/shared/utils/time_ago.dart';
 import 'package:flutter/material.dart';
 
 class ChatsList extends StatelessWidget {

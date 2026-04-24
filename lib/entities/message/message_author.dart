@@ -1,7 +1,7 @@
 import 'package:chat_zxc/entities/user/profile.dart';
 
 abstract interface class MessageAuthor {
-  String get name;
+  String get displayName;
 
   String get id;
 
@@ -10,7 +10,7 @@ abstract interface class MessageAuthor {
 
 class AuthorPreview implements MessageAuthor {
   @override
-  final String name;
+  final String displayName;
 
   @override
   final String? avatarUrl;
@@ -18,7 +18,7 @@ class AuthorPreview implements MessageAuthor {
   @override
   final String id;
 
-  AuthorPreview(this.name, this.avatarUrl, this.id);
+  AuthorPreview(this.displayName, this.avatarUrl, this.id);
 
   factory AuthorPreview.fromJson(Map json) {
     return AuthorPreview(json['name'], json['avatarUrl'], json['id']);
@@ -28,7 +28,7 @@ class AuthorPreview implements MessageAuthor {
 class DetailedAuthorInfo extends UserProfile implements MessageAuthor {
   DetailedAuthorInfo({
     required super.id,
-    required super.name,
+    required super.displayName,
     required super.username,
     required super.color,
     super.bio,
@@ -41,7 +41,7 @@ class DetailedAuthorInfo extends UserProfile implements MessageAuthor {
   // fromJson constructor
   factory DetailedAuthorInfo.fromJson(Map<String, dynamic> json) {
     return DetailedAuthorInfo(
-      name: json['name'],
+      displayName: json['name'],
       username: json['username'],
       color: json['color'],
       bio: json['bio'],
@@ -56,4 +56,5 @@ class DetailedAuthorInfo extends UserProfile implements MessageAuthor {
       id: json['id'],
     );
   }
+
 }

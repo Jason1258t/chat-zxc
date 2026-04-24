@@ -1,4 +1,4 @@
-import 'package:chat_zxc/shared/utils/timeAgo.dart';
+import 'package:chat_zxc/shared/utils/time_ago.dart';
 
 part 'last_seen.dart';
 
@@ -6,10 +6,10 @@ class UserProfile {
   // Personal Channel
   // Profile photos
 
-  static const maxUsernameLength = 20;
+  static const maxUsernameLength = 32;
 
   final String id;
-  final String name;
+  final String displayName;
   final String? avatarUrl;
   final String? bio;
   final String username;
@@ -21,7 +21,7 @@ class UserProfile {
   UserProfile({
     required this.id,
     required this.username,
-    required this.name,
+    required this.displayName,
     this.color,
     this.bio,
     this.phone,

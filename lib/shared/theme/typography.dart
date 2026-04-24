@@ -80,6 +80,8 @@ abstract class AetherTypography {
   // BODY — Figtree (основной UI-текст)
   // ──────────────────────────────────────────
 
+  static TextStyle get figtree => GoogleFonts.figtree();
+
   /// Текст сообщений (основной)
   static TextStyle get bodyLarge => GoogleFonts.figtree(
         fontSize: 16,
@@ -235,6 +237,13 @@ abstract class AetherTypography {
         letterSpacing: 0.0,
         height: 1.0,
       );
+
+  // Внутри abstract class AetherTypography
+  static TextStyle get avatarInitials => GoogleFonts.figtree(
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.0,
+    height: 1.0,
+  );
 
   // ──────────────────────────────────────────
   // THEME TEXT THEME (для MaterialApp)

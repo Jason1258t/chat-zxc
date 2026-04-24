@@ -1,3 +1,4 @@
+import 'package:chat_zxc/entities/user/profile.dart';
 import 'package:chat_zxc/feature/profile/model/dto/create_profile_dto.dart';
 import 'package:chat_zxc/feature/profile/model/dto/complete_registration_dto.dart';
 import 'package:chat_zxc/shared/data/firestore/user_mappers.dart';
@@ -6,7 +7,7 @@ import 'package:chat_zxc/app/firebase/config.dart';
 import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 
 import 'firebase_mappers.dart';
-import 'profile_service.dart';
+import '../profile_service.dart';
 
 Map<String, dynamic> _singleFieldUpdate(
     String field,
@@ -49,6 +50,17 @@ class FirebaseProfileService implements ProfileService {
       );
     } catch (e) {
       throw Exception('Draft getting error: $e');
+    }
+  }
+
+  @override
+  Future<UserProfile> getFullProfile(String uid) async {
+    try {
+      final doc = await _firestore.collection(_collection).doc(uid).get();
+      if (!doc.exists) throw Exception("Profile not found");
+      return doc.toUserProfile();
+    } catch (e) {
+      throw Exception('Profile getting error: $e');
     }
   }
 

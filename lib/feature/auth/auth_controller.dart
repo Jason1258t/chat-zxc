@@ -1,36 +1,13 @@
+import 'dart:developer';
+
 import 'package:chat_zxc/feature/profile/data/profile_repository.dart';
 import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'data/auth_repository.dart';
 
+part 'auth_controller_state.dart';
+
 part 'auth_controller.g.dart';
-
-enum AuthStep { pending, unauthenticated, needsProfile, authenticated }
-
-class AuthControllerState {
-  final AuthStep step;
-  final Exception? error;
-  final bool loading;
-
-  const AuthControllerState(this.step, {this.error, this.loading = false});
-
-  AuthControllerState copyWith({
-    AuthStep? step,
-    Exception? error,
-    bool? loading,
-  }) {
-    return AuthControllerState(
-      step ?? this.step,
-      error: error ?? this.error,
-      loading: loading ?? this.loading,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'AuthControllerState\n{\n\tstep: $step,\n\tloading: $loading,\n\terror: $error\n}';
-  }
-}
 
 @riverpod
 AuthRepository authRepository(Ref ref) => AuthRepository();
@@ -57,7 +34,7 @@ class AuthController extends _$AuthController {
   DraftProfile get draftProfile => _profileDraft!;
 
   void clearError() {
-    state = state.copyWith(error: null);
+    state = state.clearError();
   }
 
   Future<void> _handleFirebaseState(AuthentificationState firebaseState) async {
@@ -69,7 +46,7 @@ class AuthController extends _$AuthController {
         state = state.copyWith(step: AuthStep.unauthenticated);
         break;
       case AuthentificationState.loading:
-        state = state.copyWith(loading: true);
+        if (!state.loading) state = state.copyWith(loading: true);
         break;
       case AuthentificationState.pending:
         state = state.copyWith(step: AuthStep.pending);
@@ -116,7 +93,6 @@ class AuthController extends _$AuthController {
     state = state.copyWith(loading: true, error: null);
     try {
       await _authRepo.confirmCode(code);
-      // После подтверждения поток репозитория вызовет auth -> processAuthState
       state = state.copyWith(loading: false);
     } catch (e) {
       state = state.copyWith(
@@ -130,15 +106,23 @@ class AuthController extends _$AuthController {
     required String username,
     required String displayName,
   }) async {
-    final user = _authRepo.currentUser;
-    if (user == null) return;
+    try {
+      final user = _authRepo.currentUser;
+      if (user == null) return;
 
-    state = state.copyWith(loading: true);
-    await _profileRepo.completeRegistration(
-      uid: user.uid,
-      username: username,
-      displayName: displayName,
-    );
-    state = state.copyWith(step: AuthStep.authenticated, loading: false);
+      state = state.copyWith(loading: true);
+      await _profileRepo.completeRegistration(
+        uid: user.uid,
+        username: username,
+        displayName: displayName,
+      );
+      state = state.copyWith(step: AuthStep.authenticated, loading: false);
+    } catch (e) {
+      state = state.copyWith(
+        loading: false,
+        error: e is Exception ? e : Exception(e.toString()),
+      );
+      log(e.toString());
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:chat_zxc/entities/user/profile.dart';
 import 'package:chat_zxc/feature/profile/model/draft_profile.dart';
 import 'package:chat_zxc/feature/profile/model/dto/create_profile_dto.dart';
 import 'package:chat_zxc/feature/profile/model/dto/complete_registration_dto.dart';
@@ -7,6 +8,8 @@ abstract interface class ProfileService {
 
   /// Возвращает черновик профиля, с пометкой о том, является ли он завершенным
   Future<DraftProfile?> getDraftProfile(String uid);
+
+  Future<UserProfile> getFullProfile(String uid);
 
   Future<void> createProfile(CreateProfileDto dto);
 
