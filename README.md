@@ -1,17 +1,66 @@
-# chat_zxc
+# Chat ZXC 🚀
 
-A new Flutter project.
+Современное мобильное приложение для обмена сообщениями, построенное на стеке Flutter и Firebase с использованием архитектурной методологии **Feature-Sliced Design (FSD)**.
 
-## Getting Started
+## 📱 О проекте
 
-This project is a starting point for a Flutter application.
+**Chat ZXC** — это функциональный мессенджер, поддерживающий авторизацию по номеру телефона, поиск пользователей, создание чатов и обмен сообщениями в реальном времени. Интерфейс выполнен в кастомной темной теме **Aether**.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠 Технологический стек
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Core
+- **Flutter & Dart**: Кроссплатформенная разработка.
+- **Riverpod (Generators)**: Современное и безопасное управление состоянием приложения.
+- **Flutter Hooks**: Оптимизация жизненного цикла виджетов.
+- **GoRouter**: Декларативная навигация с поддержкой глубоких ссылок и редиректов.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Backend & Data
+- **Firebase**:
+    - **Authentication**: Вход по номеру телефона.
+    - **Firestore**: Хранение данных пользователей и сообщений в реальном времени.
+    - **Storage**: Хранение медиафайлов (аватарки и др.).
+- **Гибкость бэкенда**: В текущей реализации для хранения данных и аутентификации используется Firebase, однако весь код взаимодействия с бэкендом скрыт за интерфейсами и абстракциями. Это обеспечивает высокую гибкость и позволяет при необходимости переехать на любой другой формат бэкенда или API с минимальными изменениями в бизнес-логике.
+- **Drift (SQLite)**: Локальная база данных для кэширования профилей и обеспечения работы в офлайн-режиме.
+- **Connectivity Plus**: Мониторинг состояния сети.
+
+### UI & UX
+- **Aether Theme**: Кастомная темная тема оформления.
+- **Flutter Animate**: Плавные анимации интерфейса.
+- **Pinput**: Кастомизированное поле ввода OTP-кодов.
+- **Cached Network Image**: Эффективная загрузка и кэширование изображений.
+- **Shimmer**: Эффект «скелетной» загрузки контента.
+
+### Code Generation
+- **Freezed & JSON Serializable**: Генерация моделей данных.
+- **Riverpod Generator**: Автогенерация провайдеров.
+- **Drift Dev**: Генерация кода для работы с БД.
+
+## 🏗 Архитектура (Feature-Sliced Design)
+
+Проект организован по принципам **Feature-Sliced Design**, что обеспечивает масштабируемость и контролируемую связность кода:
+
+- **app**: Глобальные настройки приложения (роутинг, темы, инициализация сервисов).
+- **pages**: Композиция экранов из фич и сущностей. Примеры: `HomeScreen`, `ChatScreen`.
+- **features**: Реализация пользовательских сценариев.
+    - `auth`: Авторизация и верификация номера телефона.
+    - `user_chats`: Управление списком диалогов и состоянием чатов.
+    - `search`: Поиск пользователей в системе.
+    - `profile`: Управление профилем пользователя и настройками.
+- **entities**: Бизнес-сущности и работа с их данными (модели, локальное хранилище, мапперы).
+    - `chat`, `user`, `message`.
+- **shared**: Общий инфраструктурный слой. Переиспользуемые виджеты, утилиты, темы и базовые клиенты.
+
+## 🚀 Начало работы
+
+1.  **Установите зависимости**:
+    ```bash
+    flutter pub get
+    ```
+2.  **Запустите генерацию кода**:
+    ```bash
+    dart run build_runner build --delete-conflicting-outputs
+    ```
+3.  **Запустите проект**:
+    ```bash
+    flutter run
+    ```
